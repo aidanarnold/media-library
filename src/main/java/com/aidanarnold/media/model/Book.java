@@ -1,19 +1,13 @@
 package com.aidanarnold.media.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.persistence.*;
+
 /**
  * POJO representing a Book entity
  * @author aidanarnold
  * 
  */
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.hibernate.validator.constraints.NotEmpty;
-
 @Entity
 @Table(name="BOOK")
 public class Book {
@@ -30,7 +24,7 @@ public class Book {
 	@Column(name="author")
 	private String author;
 	
-	@Column(name="is_read")
+	@Column(name="read")
 	private Boolean isRead;
 	
 	public Book() {

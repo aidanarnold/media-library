@@ -1,45 +1,44 @@
 package com.aidanarnold.media.service;
 
-import java.util.List;
-
+import com.aidanarnold.media.model.Game;
+import com.aidanarnold.media.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.aidanarnold.media.dao.GameDao;
-import com.aidanarnold.media.model.Game;
+import java.util.List;
 
 /***
  * Service layer implementation, managing CRUD
  * @author aidanarnold
  *
  */
-@Service("gameService")
+@Service
 @Transactional
 public class GameServiceImpl implements GameService {
 
 	@Autowired
-	private GameDao gameDao;
+	private GameRepository gameRepository;
 	
 	public Game getGame(Integer id) {
-		return gameDao.getGame(id);
+		return gameRepository.findOne(id);
 	}
 
 	public void addGame(Game game) {
-		gameDao.addGame(game);
+		gameRepository.save(game);
 	}
 
 	public List<Game> listGames() {
-		return gameDao.list();
+		return gameRepository.findAll();
 	}
 
 	public void deleteGame(Game game) {
-		gameDao.deleteGame(game);
+		gameRepository.delete(game);
 		
 	}
 
 	public void updateGame(Game game) {
-		gameDao.updateGame(game);
+		gameRepository.save(game);
 		
 	}
 

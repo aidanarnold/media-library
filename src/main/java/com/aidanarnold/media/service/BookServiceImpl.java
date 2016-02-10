@@ -1,46 +1,43 @@
 package com.aidanarnold.media.service;
 
-import java.util.List;
-
+import com.aidanarnold.media.model.Book;
+import com.aidanarnold.media.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.aidanarnold.media.dao.BookDao;
-import com.aidanarnold.media.model.Book;
+import java.util.List;
 
 /***
  * Service layer implementation, managing CRUD
  * @author aidanarnold
  *
  */
-@Service("bookService")
+@Service
 @Transactional
 public class BookServiceImpl implements BookService {
 
 	@Autowired
-	private BookDao bookDao;
+	private BookRepository bookRepository;
 	
 	public Book getBook(Integer id) {
-		return bookDao.getBook(id);
+		return bookRepository.findOne(id);
 	}
 
 	public void addBook(Book book) {
-		bookDao.addBook(book);
+		bookRepository.save(book);
 	}
 
 	public List<Book> listBooks() {
-		return bookDao.list();
+		return bookRepository.findAll();
 	}
 
 	public void deleteBook(Book book) {
-		bookDao.deleteBook(book);
-		
+		bookRepository.delete(book);
 	}
 
 	public void updateBook(Book book) {
-		bookDao.updateBook(book);
-		
+		bookRepository.save(book);
 	}
 
 }

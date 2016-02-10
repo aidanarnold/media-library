@@ -5,14 +5,9 @@ package com.aidanarnold.media.model;
  * @author aidanarnold
  * 
  */
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="GAME")
@@ -30,7 +25,7 @@ public class Game {
 	@Column(name="platform")
 	private String platform;
 	
-	@Column(name="is_played")
+	@Column(name="played")
 	private Boolean isPlayed;
 	
 	public Game() {

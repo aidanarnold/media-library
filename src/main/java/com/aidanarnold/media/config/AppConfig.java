@@ -10,22 +10,21 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+@Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.aidanarnold.media")
-@Configuration
 public class AppConfig extends WebMvcConfigurerAdapter {
-	
-	 @Override
-	 public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-	 }
-	 
-	
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+    }
+
 	@Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
- 
+
     @Bean
     public InternalResourceViewResolver getInternalResourceViewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
@@ -33,7 +32,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         resolver.setSuffix(".jsp");
         return resolver;
     }
-    
+
     @Bean(name = "messageSource")
     public ReloadableResourceBundleMessageSource getMessageSource() {
         ReloadableResourceBundleMessageSource resource = new ReloadableResourceBundleMessageSource();
