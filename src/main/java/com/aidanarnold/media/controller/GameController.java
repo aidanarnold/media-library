@@ -1,9 +1,7 @@
 package com.aidanarnold.media.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
+import com.aidanarnold.media.model.Game;
+import com.aidanarnold.media.service.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.aidanarnold.media.model.Game;
-import com.aidanarnold.media.service.GameService;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Handles requests for the application home page.
@@ -66,10 +64,7 @@ public class GameController {
 			return "gameForm";
 		}
 		else {
-			if (b.getId() != null)
-				gameService.updateGame(b);
-			else
-				gameService.addGame(b);
+			gameService.upsertGame(b);
 		}
 		
 		return "redirect:/games";

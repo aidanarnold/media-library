@@ -25,11 +25,12 @@
 					aria-controls="navbar">
 					<span class="sr-only">Toggle navigation</span>
 				</button>
-				<a class="navbar-brand" href="/media">Media Library</a>
+				<a class="navbar-brand" href="/">Media Library</a>
 				<ul class="nav navbar-nav">
-					<li><a href="/media">Home</a></li>
+					<li><a href="/">Home</a></li>
 					<li class="active"><a href="books">Books</a></li>
 					<li><a href="games">Games</a></li>
+					<li><a href="movies">Movies</a></li>
 				</ul>
 			</div>
 		</div>

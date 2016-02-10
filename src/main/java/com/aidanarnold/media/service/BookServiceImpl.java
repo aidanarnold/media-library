@@ -24,7 +24,7 @@ public class BookServiceImpl implements BookService {
 		return bookRepository.findOne(id);
 	}
 
-	public void addBook(Book book) {
+	public void upsertBook(Book book) {
 		bookRepository.save(book);
 	}
 
@@ -35,9 +35,4 @@ public class BookServiceImpl implements BookService {
 	public void deleteBook(Book book) {
 		bookRepository.delete(book);
 	}
-
-	public void updateBook(Book book) {
-		bookRepository.save(book);
-	}
-
 }

@@ -60,12 +60,12 @@ public class Movie {
 		this.year = year;
 	}
 
-	public Boolean getWatched() {
+	public Boolean getIsWatched() {
 		return isWatched;
 	}
 
-	public void setWatched(Boolean watched) {
-		isWatched = watched;
+	public void setWatched(Boolean isWatched) {
+		this.isWatched = isWatched;
 	}
 
 	@Override

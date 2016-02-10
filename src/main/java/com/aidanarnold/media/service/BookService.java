@@ -1,8 +1,8 @@
 package com.aidanarnold.media.service;
 
-import java.util.List;
-
 import com.aidanarnold.media.model.Book;
+
+import java.util.List;
 
 /***
  * Service layer interface, managing CRUD
@@ -11,14 +11,11 @@ import com.aidanarnold.media.model.Book;
  */
 public interface BookService {
 	
- public Book getBook(Integer id);
+ Book getBook(Integer id);
  
- public void addBook(Book book);
+ void upsertBook(Book book);
 
- public List<Book> listBooks();
+ List<Book> listBooks();
  
- public void deleteBook(Book book);
- 
- public void updateBook(Book book);
- 
+ void deleteBook(Book book);
 }

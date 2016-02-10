@@ -22,7 +22,8 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
             <li><a href="books">Books</a></li>
-            <li><a href="games">Games</a>
+            <li><a href="games">Games</a></li>
+            <li><a href="movies">Movies</a></li>
           </ul>
 	    </div>
 	  </div>

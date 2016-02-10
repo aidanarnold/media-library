@@ -24,7 +24,7 @@ public class GameServiceImpl implements GameService {
 		return gameRepository.findOne(id);
 	}
 
-	public void addGame(Game game) {
+	public void upsertGame(Game game) {
 		gameRepository.save(game);
 	}
 
@@ -36,10 +36,4 @@ public class GameServiceImpl implements GameService {
 		gameRepository.delete(game);
 		
 	}
-
-	public void updateGame(Game game) {
-		gameRepository.save(game);
-		
-	}
-
 }

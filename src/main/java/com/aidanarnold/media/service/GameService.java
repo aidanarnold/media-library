@@ -1,8 +1,8 @@
 package com.aidanarnold.media.service;
 
-import java.util.List;
-
 import com.aidanarnold.media.model.Game;
+
+import java.util.List;
 
 /***
  * Service layer interface, managing CRUD
@@ -11,14 +11,12 @@ import com.aidanarnold.media.model.Game;
  */
 public interface GameService {
 	
- public Game getGame(Integer id);
+ Game getGame(Integer id);
  
- public void addGame(Game game);
+ void upsertGame(Game game);
 
- public List<Game> listGames();
+ List<Game> listGames();
  
- public void deleteGame(Game game);
- 
- public void updateGame(Game game);
+ void deleteGame(Game game);
  
 }
