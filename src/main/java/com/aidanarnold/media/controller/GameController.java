@@ -5,20 +5,17 @@ import com.aidanarnold.media.service.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
+@RequestMapping("games")
 public class GameController {
 
 	private static final Logger logger = LoggerFactory
@@ -28,46 +25,36 @@ public class GameController {
 	private GameService gameService;
 
 	/**
-	 * Serves up games landing page with list of games
-	 * @param model
-	 * @return games view
+	 * Gets a game by ID
+	 * @param id
+	 * @return game
 	 */
-	@RequestMapping(value = "/games", method = RequestMethod.GET)
-	public String games(Model model) {
+	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public Game getGame(@PathVariable Integer id) {
+		return gameService.getGame(id);
+	}
+
+	/**
+	 * Serves up games landing page with list of games
+	 * @return games
+	 */
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Game> games() {
 		logger.info("Displaying a list of games");
-		List<Game> games = gameService.listGames();
-		model.addAttribute("games", games);
-		return "games";
+		return gameService.listGames();
 	}
 	
 	/**
 	 * Gets a new game to be used with game form
-	 * @param model
 	 * @return gameForm
 	 */
-	@RequestMapping(value = "/game/add", method = RequestMethod.GET) 
-	public String addgame(Model model) {
+	@RequestMapping(value = "/add", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void addGame(Game game) {
 		logger.info("Create new game and display form");
-		model.addAttribute("game", new Game());
-		return "gameForm";
-	}
-
-	/**
-	 * Adds or updates a game according to whether ID is null
-	 * @param b
-	 * @param result
-	 * @return redirect
-	 */
-	@RequestMapping(value = "/game/add", method = RequestMethod.POST)
-	public String addgame(@Valid Game b, BindingResult result) {
-		if (result.hasErrors()) {
-			return "gameForm";
-		}
-		else {
-			gameService.upsertGame(b);
-		}
-		
-		return "redirect:/games";
+		gameService.upsertGame(game);
 	}
 
 	/**
@@ -76,22 +63,10 @@ public class GameController {
 	 * @return redirect
 	 */
 	@RequestMapping(value = "/game/delete/{id}", method = RequestMethod.GET)
-	public String deleteGame(@PathVariable Integer id) {
-		Game b = gameService.getGame(id);
-		logger.info(b.toString());
-		gameService.deleteGame(b);
-		return "redirect:/games";
-	}
-
-	/**
-	 * Gets game by ID to update in game form
-	 * @param id
-	 * @param model
-	 * @return gameForm
-	 */
-	@RequestMapping(value = "/game/update/{id}", method = RequestMethod.GET)
-	public String updateGame(@PathVariable Integer id, Model model) {
-		model.addAttribute("game", gameService.getGame(id));
-		return "gameForm";
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteGame(@PathVariable Integer id) {
+		Game g = gameService.getGame(id);
+		logger.info("Attempting to delete: " + g.toString());
+		gameService.deleteGame(g);
 	}
 }

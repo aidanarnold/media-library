@@ -65,11 +65,11 @@ public class Book {
 		this.author = author;
 	}
 
-	public Boolean getIsRead() {
+	public Boolean isRead() {
 		return isRead;
 	}
 
-	public void setIsRead(Boolean isRead) {
+	public void setRead(Boolean isRead) {
 		this.isRead = isRead;
 	}
 

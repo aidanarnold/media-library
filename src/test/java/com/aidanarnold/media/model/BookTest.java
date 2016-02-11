@@ -16,7 +16,7 @@ public class BookTest {
         book.setId(1);
         book.setAuthor(AUTHOR);
         book.setTitle(TITLE);
-        book.setIsRead(true);
+        book.setRead(true);
     }
 
     @Test
@@ -24,7 +24,6 @@ public class BookTest {
         Book constructedBook = new Book(TITLE);
 
         assertThat(constructedBook.getTitle()).isEqualTo(book.getTitle());
-        assertThat(constructedBook.toString()).isNotEmpty();
     }
 
     @Test
@@ -34,8 +33,7 @@ public class BookTest {
 
         assertThat(constructedBook.getAuthor()).isEqualTo(book.getAuthor());
         assertThat(constructedBook.getTitle()).isEqualTo(book.getTitle());
-        assertThat(constructedBook.getIsRead()).isEqualTo(book.getIsRead());
-        assertThat(constructedBook.toString()).isNotEmpty();
+        assertThat(constructedBook.isRead()).isEqualTo(book.isRead());
     }
 
 }

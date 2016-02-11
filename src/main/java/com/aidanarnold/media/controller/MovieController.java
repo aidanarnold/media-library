@@ -5,20 +5,17 @@ import com.aidanarnold.media.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
+@RequestMapping("movies")
 public class MovieController {
 
 	private static final Logger logger = LoggerFactory
@@ -28,70 +25,45 @@ public class MovieController {
 	private MovieService movieService;
 
 	/**
-	 * Serves up books landing page with list of books
-	 * @param model
-	 * @return books view
+	 * Gets a movie by ID
+	 * @param id
 	 */
-	@RequestMapping(value = "/movies", method = RequestMethod.GET)
-	public String books(Model model) {
-		logger.info("Displaying a list of movies");
-		List<Movie> movies = movieService.listMovies();
-		model.addAttribute("movies", movies);
-		return "movies";
+	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+	public Movie getMovie(@PathVariable Integer id) {
+		return movieService.getMovie(id);
 	}
-	
+
 	/**
-	 * Gets a new movie to be used with movie form
-	 * @param model
-	 * @return movieForm
+	 * Serves up books landing page with list of books
+	 *
+	 * @return movies
 	 */
-	@RequestMapping(value = "/movie/add", method = RequestMethod.GET)
-	public String addMovie(Model model) {
-		logger.info("Create new movie and display form");
-		model.addAttribute("movie", new Movie());
-		return "movieForm";
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Movie> movies() {
+		logger.info("Displaying a list of movies");
+		return movieService.listMovies();
 	}
 
 	/**
 	 * Adds or updates a movie according to whether ID is null
-	 * @param b
-	 * @param result
-	 * @return redirect
+	 * @param movie
 	 */
-	@RequestMapping(value = "/movie/add", method = RequestMethod.POST)
-	public String addMovie(@Valid Movie m, BindingResult result) {
-		if (result.hasErrors()) {
-			return "movieForm";
-		}
-		else {
-			movieService.upsertMovie(m);
-		}
-		
-		return "redirect:/movies";
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	public void addMovie(Movie movie) {
+		movieService.upsertMovie(movie);
 	}
 
 	/**
 	 * Deletes a movie by ID
 	 * @param id
-	 * @return redirect
 	 */
-	@RequestMapping(value = "/movie/delete/{id}", method = RequestMethod.GET)
-	public String deleteMovie(@PathVariable Integer id) {
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteMovie(@PathVariable Integer id) {
 		Movie m = movieService.getMovie(id);
-		logger.info(m.toString());
+		logger.info("Attempting to delete: " + m.toString());
 		movieService.deleteMovie(m);
-		return "redirect:/movies";
-	}
-
-	/**
-	 * Gets movie by ID to update in movie form
-	 * @param id
-	 * @param model
-	 * @return movieForm
-	 */
-	@RequestMapping(value = "/movie/update/{id}", method = RequestMethod.GET)
-	public String updateMovie(@PathVariable Integer id, Model model) {
-		model.addAttribute("movie", movieService.getMovie(id));
-		return "movieForm";
 	}
 }

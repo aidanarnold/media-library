@@ -35,7 +35,13 @@ public class Game {
 	public Game(String title){
 		this.title = title;
 	}
-	
+
+	public Game(String title, String platform, Boolean isPlayed) {
+		this.title = title;
+		this.platform = platform;
+		this.isPlayed = isPlayed;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -60,11 +66,11 @@ public class Game {
 		this.platform = platform;
 	}
 
-	public Boolean getIsPlayed() {
+	public Boolean isPlayed() {
 		return isPlayed;
 	}
 
-	public void setIsPlayed(Boolean isPlayed) {
+	public void setPlayed(Boolean isPlayed) {
 		this.isPlayed = isPlayed;
 	}
 

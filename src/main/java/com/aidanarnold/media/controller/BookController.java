@@ -5,20 +5,17 @@ import com.aidanarnold.media.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
+@RequestMapping("books")
 public class BookController {
 
 	private static final Logger logger = LoggerFactory
@@ -29,45 +26,35 @@ public class BookController {
 
 	/**
 	 * Serves up books landing page with list of books
-	 * @param model
-	 * @return books view
+	 * @return books
 	 */
-	@RequestMapping(value = "/books", method = RequestMethod.GET)
-	public String books(Model model) {
-		logger.info("Displaying a list of books");
-		List<Book> books = bookService.listBooks();
-		model.addAttribute("books", books);
-		return "books";
-	}
-	
-	/**
-	 * Gets a new book to be used with book form
-	 * @param model
-	 * @return bookForm
-	 */
-	@RequestMapping(value = "/book/add", method = RequestMethod.GET) 
-	public String addbook(Model model) {
-		logger.info("Create new book and display form");
-		model.addAttribute("book", new Book());
-		return "bookForm";
+	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public Book getBook(@PathVariable Integer id) {
+		logger.info("Getting a book");
+		return bookService.getBook(id);
 	}
 
 	/**
-	 * Adds or updates a book according to whether ID is null
-	 * @param b
-	 * @param result
+	 * Serves up books landing page with list of books
+	 * @return books
+	 */
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Book> books() {
+		logger.info("Displaying a list of books");
+		return bookService.listBooks();
+	}
+
+	/**
+	 * Adds or updates a book
+	 * @param book
 	 * @return redirect
 	 */
-	@RequestMapping(value = "/book/add", method = RequestMethod.POST)
-	public String addbook(@Valid Book b, BindingResult result) {
-		if (result.hasErrors()) {
-			return "bookForm";
-		}
-		else {
-			bookService.upsertBook(b);
-		}
-		
-		return "redirect:/books";
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	public void addBook(Book book) {
+		bookService.upsertBook(book);
 	}
 
 	/**
@@ -75,23 +62,11 @@ public class BookController {
 	 * @param id
 	 * @return redirect
 	 */
-	@RequestMapping(value = "/book/delete/{id}", method = RequestMethod.GET)
-	public String deleteBook(@PathVariable Integer id) {
-		Book b = bookService.getBook(id);
-		logger.info(b.toString());
-		bookService.deleteBook(b);
-		return "redirect:/books";
-	}
-
-	/**
-	 * Gets book by ID to update in book form
-	 * @param id
-	 * @param model
-	 * @return bookForm
-	 */
-	@RequestMapping(value = "/book/update/{id}", method = RequestMethod.GET)
-	public String updateBook(@PathVariable Integer id, Model model) {
-		model.addAttribute("book", bookService.getBook(id));
-		return "bookForm";
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteBook(@PathVariable Integer id) {
+		Book book = bookService.getBook(id);
+		logger.info("Attempting to delete: " + book.getTitle());
+		bookService.deleteBook(book);
 	}
 }

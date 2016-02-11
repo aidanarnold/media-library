@@ -35,7 +35,13 @@ public class Movie {
 	public Movie(String title){
 		this.title = title;
 	}
-	
+
+	public Movie(String title, String year, Boolean isWatched) {
+		this.title = title;
+		this.year = year;
+		this.isWatched = isWatched;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -60,7 +66,7 @@ public class Movie {
 		this.year = year;
 	}
 
-	public Boolean getIsWatched() {
+	public Boolean isWatched() {
 		return isWatched;
 	}
 

@@ -49,7 +49,7 @@ public class BookServiceTest {
             bookRepository.findOne(1);
             assertThat(book.getTitle()).isEqualTo(book1.getTitle());
             assertThat(book.getAuthor()).isEqualTo(book1.getAuthor());
-            assertThat(book.getIsRead()).isEqualTo(book1.getIsRead());
+            assertThat(book.isRead()).isEqualTo(book1.isRead());
         }};
     }
 
