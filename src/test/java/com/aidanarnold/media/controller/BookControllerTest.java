@@ -57,16 +57,14 @@ public class BookControllerTest {
     @Test
     public void testShouldGetBooks() {
 
-        new NonStrictExpectations()
-        {{
+        new NonStrictExpectations() {{
             bookService.listBooks();
             result = books;
         }};
 
         List<Book> booksReturned = bookController.books();
 
-        new Verifications()
-        {{
+        new Verifications() {{
             assertThat(booksReturned.size()).isEqualTo(3);
             assertThat(booksReturned.get(0).getAuthor()).isEqualTo(books.get(0).getAuthor());
             assertThat(booksReturned.get(0).getTitle()).isEqualTo(books.get(0).getTitle());
@@ -81,13 +79,31 @@ public class BookControllerTest {
     }
 
     @Test
-    public void testShouldUpsertBook() {
+    public void testShouldAddBook() {
         bookController.addBook(book2);
 
         new Verifications() {{
             bookService.upsertBook(book2);
         }};
     }
+
+    @Test
+    public void testShouldUpdateBook() {
+
+        new NonStrictExpectations() {{
+            bookService.getBook(anyInt);
+            result = book1;
+        }};
+
+        book1.setTitle("Book: A Title");
+
+        bookController.updateBook(1, book1);
+
+        new Verifications() {{
+            bookService.upsertBook(book1);
+        }};
+    }
+
 
     @Test
     public void testShouldDeleteBook() {

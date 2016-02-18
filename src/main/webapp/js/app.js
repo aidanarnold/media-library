@@ -23,13 +23,67 @@ angular
                 activeTab: 'movies'
             })
     })
-    .service('BookService', function ($log, $resource) {
+    .factory('Book', function ($resource) {
+        return $resource('/books/:id', {id: '@id'}, {
+            update: {
+                method: 'PUT' // this method issues a PUT request
+            }
+        });
+    })
+    .service('BookService', function ($log, $window, Book) {
         return {
             getAll: function () {
-                var bookResource = $resource('books/list', {}, {
-                    query: {method: 'GET', params: {}, isArray: true}
+                return Book.query();
+            },
+            getBook: function (bookId) {
+                return Book.get({id: bookId});
+            },
+            addBook: function (b) {
+                console.log("add book");
+                var book = new Book();
+                book.title = b.title;
+                book.author = b.author;
+                book.read = b.read;
+                book.$save(function () {
+                    $window.location.reload();
+                    //toast
                 });
-                return bookResource.query();
+            },
+            updateBook: function (b) {
+                console.log("update book");
+                var book = new Book();
+                book.id = b.id;
+                book.title = b.title;
+                book.author = b.author;
+                book.read = b.read;
+                book.$update({id: b.id}, function () {
+                    $window.location.reload();
+                });
+            },
+            deleteBook: function (bookId) {
+                console.log("delete book");
+                bootbox.dialog({
+                    size: 'small',
+                    message: "Are you sure?",
+                    buttons: {
+                        no: {
+                            label: "Nevermind",
+                            className: "btn-default",
+                            callback: function () {
+                                console.log("Nevermind");
+                            }
+                        },
+                        yes: {
+                            label: "Delete It Forever!",
+                            className: "btn-danger",
+                            callback: function () {
+                                Book.delete({id: bookId}, function () {
+                                    $window.location.reload();
+                                });
+                            }
+                        }
+                    }
+                });
             }
         }
     })
@@ -58,6 +112,18 @@ angular
     })
     .controller('bookController', function ($scope, $log, BookService) {
         $scope.books = BookService.getAll();
+
+        $scope.addBook = function (b) {
+            BookService.addBook(b);
+        }
+
+        $scope.updateBook = function (b) {
+            BookService.updateBook(b);
+        }
+
+        $scope.deleteBook = function (bookId) {
+            BookService.deleteBook(bookId);
+        }
     })
     .controller('gameController', function ($scope, $log, GameService) {
         $scope.games = GameService.getAll();

@@ -10,29 +10,29 @@ import java.util.List;
 
 /***
  * Service layer implementation, managing CRUD
- * @author aidanarnold
  *
+ * @author aidanarnold
  */
 @Service
 @Transactional
 public class BookServiceImpl implements BookService {
 
-	@Autowired
-	private BookRepository bookRepository;
-	
-	public Book getBook(Integer id) {
-		return bookRepository.findOne(id);
-	}
+    @Autowired
+    private BookRepository bookRepository;
 
-	public void upsertBook(Book book) {
-		bookRepository.save(book);
-	}
+    public Book getBook(Integer id) {
+        return bookRepository.findOne(id);
+    }
 
-	public List<Book> listBooks() {
-		return bookRepository.findAll();
-	}
+    public void upsertBook(Book book) {
+        bookRepository.save(book);
+    }
 
-	public void deleteBook(Book book) {
-		bookRepository.delete(book);
-	}
+    public List<Book> listBooks() {
+        return bookRepository.findAll();
+    }
+
+    public void deleteBook(Book book) {
+        bookRepository.delete(book);
+    }
 }
