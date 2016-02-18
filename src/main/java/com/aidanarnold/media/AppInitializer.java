@@ -1,6 +1,6 @@
 package com.aidanarnold.media;
 
-import com.aidanarnold.media.config.AppConfig;
+import com.aidanarnold.media.config.WebAppConfig;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
@@ -24,7 +24,7 @@ public class AppInitializer implements WebApplicationInitializer {
 
     private AnnotationConfigWebApplicationContext getContext() {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.register(AppConfig.class);
+        context.register(WebAppConfig.class);
         return context;
     }
 
