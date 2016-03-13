@@ -1,63 +1,73 @@
 <div class="container">
-    <table class="table table-striped" ng-cloak ng-show="books.length">
+    <table class="table table-striped" ng-show="bookService.list.length">
         <tr>
             <th>Title</th>
             <th>Author</th>
             <th>Read?</th>
-            <th colspan="2">Action</th>
+            <th colspan="2" style="text-align: center;">Action</th>
         </tr>
-        <tr ng-repeat="book in books">
-            <td><input type="text" ng-model="book.title" size="50"/></td>
-            <td><input type="text" ng-model="book.author" size="50"/></td>
-            <td><input type="checkbox" ng-model="book.read"/></td>
-            <td><a href="" role="button"
-                   class="btn btn-primary" ng-click="updateBook(book)"> <span
-                    class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
-            </a></td>
-            <td><a href="" role="button" class="btn btn-danger"
-                   aria-label="Delete" ng-click="deleteBook(book.id)">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-            </a></td>
+        <tr ng-repeat="book in bookService.list | orderBy:'id'">
+            <td ng-model="book.title">
+                {{ book.title }}
+            </td>
+            <td ng-model="book.author">
+                {{ book.author }}
+            </td>
+            <td ng-model="book.read">
+                {{ book.read | yesNo }}
+            </td>
+            <td style="text-align:center">
+                <button class="btn btn-primary glyphicon glyphicon-pencil"
+                        ng-click="openBookModal(book)"></button>
+            </td>
+            <td style="text-align:center">
+                <button class="btn btn-danger glyphicon glyphicon-remove"
+                        ng-click="deleteBook($index, book.id)"></button>
+            </td>
         </tr>
     </table>
-    <h4 ng-hide="books.length">No Books Added Yet</h4>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#bookModal"> <span
+    <h4 ng-hide="bookService.list.length">No Books Added Yet</h4>
+    <button type="button" class="btn btn-primary" ng-click="openBookModal()"> <span
             class="glyphicon glyphicon-plus" aria-hidden="false"></span> Add New Book
     </button>
 
     <!--Modal-->
-    <div id="bookModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add Book</h4>
-                </div>
-                <div id="content" class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="book-title" class="control-label">Title:</label>
-                            <input type="text" class="form-control" id="book-title" ng-model="book.title">
-                        </div>
-                        <div class="form-group">
-                            <label for="book-author" class="control-label">Author:</label>
-                            <input type="text" class="form-control" id="book-author" ng-model="book.author">
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="book.read"> Read It
-                            </label>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" ng-click="addBook(book)">Save
-                    </button>
-                </div>
-            </div>
+    <script type="text/ng-template" id="bookModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title" ng-show="!book.id">Add Book</h3>
+            <h3 class="modal-title" ng-show="book.id">Edit Book</h3>
         </div>
-    </div>
+        <div class="modal-body">
+            <ng-form name="bookForm" novalidate>
+                <div ng-class="{ 'has-error' : bookForm.title.$invalid && !bookForm.title.$pristine }">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-control" name="title" ng-model="book.title" required/>
+                        <span ng-show="bookForm.title.$invalid && !bookForm.title.$pristine" class="help-block">
+                            A title is required.
+                        </span>
+                    </div>
+                </div>
+                <div ng-class="{ 'has-error' : bookForm.author.$invalid && !bookForm.author.$pristine }">
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input type="text" class="form-control" name="author" ng-model="book.author" required/>
+                        <p ng-show="bookForm.author.$invalid && !bookForm.author.$pristine" class="help-block">
+                            An author is required.</p>
+                    </div>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="book.read"> Read It
+                    </label>
+                </div>
+            </ng-form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary btn-sm" ng-disabled="bookForm.$pristine||bookForm.$invalid"
+                    ng-click="save(book)">Save
+            </button>
+        </div>
+    </script>
 </div>

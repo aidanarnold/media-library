@@ -1,5 +1,5 @@
 angular
-    .module('mediaApp', ['ngRoute', 'ngResource'])
+    .module('mediaApp', ['ngRoute', 'ngResource', 'ui.bootstrap'])
     .config(function ($routeProvider) {
         $routeProvider
             .when('/', {
@@ -30,61 +30,61 @@ angular
             }
         });
     })
-    .service('BookService', function ($log, $window, Book) {
-        return {
-            getAll: function () {
-                return Book.query();
-            },
-            getBook: function (bookId) {
-                return Book.get({id: bookId});
-            },
-            addBook: function (b) {
-                console.log("add book");
-                var book = new Book();
-                book.title = b.title;
-                book.author = b.author;
-                book.read = b.read;
-                book.$save(function () {
-                    $window.location.reload();
-                    //toast
-                });
-            },
-            updateBook: function (b) {
-                console.log("update book");
-                var book = new Book();
-                book.id = b.id;
-                book.title = b.title;
-                book.author = b.author;
-                book.read = b.read;
-                book.$update({id: b.id}, function () {
-                    $window.location.reload();
-                });
-            },
-            deleteBook: function (bookId) {
-                console.log("delete book");
-                bootbox.dialog({
-                    size: 'small',
-                    message: "Are you sure?",
-                    buttons: {
-                        no: {
-                            label: "Nevermind",
-                            className: "btn-default",
-                            callback: function () {
-                                console.log("Nevermind");
-                            }
-                        },
-                        yes: {
-                            label: "Delete It Forever!",
-                            className: "btn-danger",
-                            callback: function () {
-                                Book.delete({id: bookId}, function () {
-                                    $window.location.reload();
-                                });
-                            }
-                        }
-                    }
+    .service('BookService', function ($log, Book) {
+        var self = this;
+
+        self.updateBooks = function () {
+            self.list = Book.query();
+            return self.list;
+        };
+
+        self.list = self.updateBooks();
+
+        self.save = function (b) {
+            var bookToSave = new Book();
+            bookToSave.title = b.title;
+            bookToSave.author = b.author;
+            bookToSave.read = b.read;
+
+            if (!b.id) {
+                bookToSave.$save(function () {
+                    $log.info("book added");
+                    self.list = self.updateBooks();
                 });
             }
+            else {
+                bookToSave.id = b.id;
+                bookToSave.$update({id: b.id}, function () {
+                    $log.info("book updated");
+                    self.list = self.updateBooks();
+                });
+            }
+        };
+
+        self.delete = function ($index, bookId) {
+            bootbox.dialog({
+                size: 'small',
+                message: "Are you sure?",
+                buttons: {
+                    no: {
+                        label: "Nevermind",
+                        className: "btn-default",
+                        callback: function () {
+                            $log.debug("delete cancelled");
+                            return false;
+                        }
+                    },
+                    yes: {
+                        label: "Delete It Forever!",
+                        className: "btn-danger",
+                        callback: function () {
+                            Book.delete({id: bookId}, function () {
+                                self.list.splice($index, 1);
+                            });
+                        }
+                    }
+                }
+            })
         }
     })
     .service('GameService', function ($log, $resource) {
@@ -110,20 +110,43 @@ angular
     .controller('homeController', function ($scope, $route) {
         $scope.$route = $route;
     })
-    .controller('bookController', function ($scope, $log, BookService) {
-        $scope.books = BookService.getAll();
+    .controller('bookController', function ($scope, $log, $modal, BookService) {
+        $scope.bookService = BookService;
 
-        $scope.addBook = function (b) {
-            BookService.addBook(b);
+        $scope.openBookModal = function (book) {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'bookModal.html',
+                controller: 'bookModalController',
+                book: book,
+                resolve: {
+                    book: function () {
+                        return book;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                $scope.books = BookService.updateBooks();
+            });
+        };
+
+        $scope.deleteBook = function ($index, bookId) {
+            BookService.delete($index, bookId);
+        }
+    })
+    .controller('bookModalController', function ($scope, $log, $modalInstance, BookService, book) {
+
+        $scope.book = angular.copy(book);
+
+        $scope.save = function (b) {
+            BookService.save(b);
+            $modalInstance.close();
         }
 
-        $scope.updateBook = function (b) {
-            BookService.updateBook(b);
-        }
-
-        $scope.deleteBook = function (bookId) {
-            BookService.deleteBook(bookId);
-        }
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     })
     .controller('gameController', function ($scope, $log, GameService) {
         $scope.games = GameService.getAll();
