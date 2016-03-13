@@ -44,7 +44,6 @@ public class BookController {
     @RequestMapping(value = "/books", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void addBook(@RequestBody Book book) {
-        System.out.println(book);
         bookService.upsertBook(book);
     }
 
@@ -67,7 +66,6 @@ public class BookController {
     @RequestMapping(value = "/books/{id}", method = RequestMethod.PUT)
     @ResponseBody
     public void updateBook(@PathVariable Integer id, @RequestBody Book book) {
-        //Book book = bookService.getBook(id);
         bookService.upsertBook(book);
     }
 
@@ -81,7 +79,6 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteBook(@PathVariable Integer id) {
         Book book = bookService.getBook(id);
-        logger.info("Attempting to delete: " + book.getTitle());
         bookService.deleteBook(book);
     }
 }
